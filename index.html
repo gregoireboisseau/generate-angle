@@ -827,14 +827,16 @@
           const fear = getRaw("angle1_fears");
           const explanation = getRaw("angle1_explanations");
           const example = getRaw("angle1_examples");
-          text = `Beaucoup de ${actor} pensent que ${fear}.\nC'est faux.\n\n${explanation}\n\n${example}`;
+          text = `${actor} pensent souvent ${fear}.\n\nC'est faux.\n\n${explanation}\n\n${example}`;
         } else if (angleId === "angle2") {
           const client = getRaw("angle2_clients");
           const problem = getRaw("angle2_problems");
           const solution = getRaw("angle2_solutions");
           const result = getRaw("angle2_results");
           const insight = getRaw("angle2_insights");
-          text = `J'ai aidé ${client}.\n\nProblème : ${problem}\nSolution : ${solution}\nRésultat : ${result}\n\n${insight}`;
+          // Minuscule sur la première lettre pour que "Un gîte" devienne "un gîte" dans la phrase
+          const lowerClient = client ? client.charAt(0).toLowerCase() + client.slice(1) : "";
+          text = `J'ai aidé ${lowerClient}.\n\nProblème : ${problem}\nSolution : ${solution}\nRésultat : ${result}\n\n${insight}`;
         } else if (angleId === "angle3") {
           const actor = getRaw("angle3_actors");
           const situation = getRaw("angle3_situations");
@@ -848,7 +850,7 @@
           const error = getRaw("angle4_errors");
           const consequence = getRaw("angle4_consequences");
           const solution = getRaw("angle4_solutions");
-          text = `Les ${actor} qui perdent le plus de clients font cette erreur : ${error}\n\nRésultat : ${consequence}\n\n${solution}`;
+          text = `${actor} qui perdent le plus de clients font cette erreur : ${error}\n\nRésultat : ${consequence}\n\n${solution}`;
         }
       } catch (e) {
         text = "Erreur de génération. Vérifie que tes variables ne sont pas vides.";
