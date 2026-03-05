@@ -840,7 +840,7 @@
           const situation = getRaw("angle3_situations");
           const tips = JSON.parse(getRaw("angle3_tips") || "[]");
           const cta = getRaw("angle3_ctas");
-          text = `Si tu es ${actor} et ${situation}, voici ${tips.length} trucs :\n\n`;
+          text = `${actor} ${situation}, voici ${tips.length} trucs :\n\n`;
           text += tips.map((t, i) => `${i + 1}️⃣ ${t}`).join("\n");
           text += `\n\n${cta}`;
         } else if (angleId === "angle4") {
