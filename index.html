@@ -1,574 +1,984 @@
 <!doctype html>
 <html lang="fr">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Générateur de briefs LinkedIn (JSON)</title>
-    <style>
-      :root { color-scheme: light; }
-      body{
-        font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;
-        margin:0;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height:100vh;
-        color:#111827;
-      }
-      .wrap{max-width:1100px;margin:0 auto;padding:22px;}
-      header{
-        text-align:center;
-        margin-bottom:24px;
-        padding:24px;
-        background:rgba(255,255,255,0.95);
-        border-radius:16px;
-        box-shadow:0 10px 30px rgba(0,0,0,0.15);
-      }
-      h1{
-        font-size:28px;
-        margin:0 0 8px 0;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-      }
-      .hint{font-size:14px;color:#6b7280}
-      .two{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
-      @media (max-width: 980px){ .two{grid-template-columns:1fr} }
-      .card{
-        background:#fff;
-        border:1px solid #e5e7eb;
-        border-radius:16px;
-        padding:0;
-        box-shadow:0 4px 20px rgba(0,0,0,0.1);
-        overflow:hidden;
-      }
-      .accordion-header{
-        display:flex;
-        align-items:center;
-        justify-content:space-between;
-        padding:18px 20px;
-        cursor:pointer;
-        background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color:#fff;
-        user-select:none;
-        transition: background 0.3s ease;
-      }
-      .accordion-header:hover{
-        background:linear-gradient(135deg, #5568d3 0%, #653a8b 100%);
-      }
-      .accordion-title{
-        font-weight:700;
-        font-size:16px;
-        display:flex;
-        align-items:center;
-        gap:10px;
-      }
-      .accordion-icon{
-        font-size:20px;
-        transition: transform 0.3s ease;
-      }
-      .accordion-header.collapsed .accordion-icon{
-        transform: rotate(-90deg);
-      }
-      .accordion-content{
-        padding:20px;
-        display:block;
-      }
-      .accordion-content.collapsed{
-        display:none;
-      }
-      .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-      @media (max-width: 820px){ .grid{grid-template-columns:1fr} }
-      .row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
-      .label{font-weight:700;font-size:13px;color:#374151}
-      textarea{
-        width:100%; min-height:140px; resize:vertical;
-        border-radius:12px;border:2px solid #e5e7eb;background:#fafafa;
-        padding:12px;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-        font-size:12px; line-height:1.35;
-        transition: border-color 0.2s ease;
-      }
-      textarea:focus{
-        outline:none;
-        border-color:#667eea;
-      }
-      .small{font-size:12px;color:#6b7280;margin-top:8px}
-      .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
-      button{
-        appearance:none;
-        border:2px solid transparent;
-        background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color:#fff;
-        padding:11px 18px;
-        border-radius:12px;
-        cursor:pointer;
-        font-weight:700;
-        font-size:14px;
-        transition: all 0.2s ease;
-        box-shadow:0 2px 8px rgba(102,126,234,0.3);
-      }
-      button:hover{
-        transform:translateY(-2px);
-        box-shadow:0 4px 12px rgba(102,126,234,0.4);
-      }
-      button.secondary{
-        background:#fff;
-        color:#667eea;
-        border:2px solid #667eea;
-        box-shadow:0 2px 8px rgba(102,126,234,0.15);
-      }
-      button.secondary:hover{
-        background:#f9fafb;
-      }
-      button:active{transform:translateY(0px)}
-      .error{color:#dc2626;font-size:12px;margin-top:8px;white-space:pre-wrap;font-weight:600}
-      .ok{color:#059669;font-size:12px;margin-top:8px;font-weight:600}
-      .value{
-        padding:14px;
-        border-radius:12px;
-        border:2px dashed #d1d5db;
-        background:#fafafa;
-        min-height:50px;
-        white-space:pre-wrap;
-        line-height:1.5;
-        font-size:14px;
-        transition: all 0.2s ease;
-      }
-      .value:hover{
-        background:#f3f4f6;
-        border-color:#9ca3af;
-      }
-      .lock{
-        display:inline-flex;
-        align-items:center;
-        gap:8px;
-        font-size:13px;
-        color:#6b7280;
-        user-select:none;
-        cursor:pointer;
-        padding:4px 8px;
-        border-radius:8px;
-        transition: background 0.2s ease;
-      }
-      .lock:hover{
-        background:rgba(0,0,0,0.05);
-      }
-      .lock input{
-        transform:translateY(1px);
-        cursor:pointer;
-        width:16px;
-        height:16px;
-      }
-      .brief{
-        margin-top:16px;
-        padding:18px;
-        border-radius:14px;
-        border:2px solid #e5e7eb;
-        background:#fafafa;
-        white-space:pre-wrap;
-        line-height:1.6;
-        font-size:14px;
-      }
-      .toast{margin-left:auto;color:#059669;font-size:13px;display:none;font-weight:600}
-      .toast.show{display:inline}
-      code{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
-    </style>
-  </head>
-  <body>
-    <div class="wrap">
-      <header>
-        <div>
-          <h1>Générateur de briefs LinkedIn - piloté par JSON</h1>
-          <div class="hint">Colle tes listes dans les champs JSON, clique "Appliquer", puis "Générer".</div>
-        </div>
-      </header>
 
-      <div class="two">
-        <!-- LEFT: JSON inputs -->
-        <section class="card">
-          <div class="accordion-header" id="accordionJsonHeader">
-            <div class="accordion-title">
-              <span>📝</span>
-              <span>1) Tes listes JSON (tableaux)</span>
-            </div>
-            <div class="accordion-icon">▼</div>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Générateur de briefs LinkedIn (4 Angles)</title>
+  <style>
+    :root {
+      color-scheme: light;
+    }
+
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      margin: 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: #111827;
+      padding-bottom: 40px;
+    }
+
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 22px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 24px;
+      padding: 24px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    h1 {
+      font-size: 28px;
+      margin: 0 0 8px 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hint {
+      font-size: 14px;
+      color: #6b7280
+    }
+
+    .two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px
+    }
+
+    @media (max-width: 980px) {
+      .two {
+        grid-template-columns: 1fr
+      }
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 0;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .accordion-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 20px;
+      cursor: pointer;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      user-select: none;
+      transition: background 0.3s ease;
+    }
+
+    .accordion-header:hover {
+      background: linear-gradient(135deg, #5568d3 0%, #653a8b 100%);
+    }
+
+    .accordion-title {
+      font-weight: 700;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .accordion-icon {
+      font-size: 20px;
+      transition: transform 0.3s ease;
+    }
+
+    .accordion-header.collapsed .accordion-icon {
+      transform: rotate(-90deg);
+    }
+
+    .accordion-content {
+      padding: 20px;
+      display: block;
+    }
+
+    .accordion-content.collapsed {
+      display: none;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    @media (min-width: 600px) {
+      .grid {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      }
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px
+    }
+
+    .label {
+      font-weight: 700;
+      font-size: 13px;
+      color: #374151
+    }
+
+    select {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      background: #fdfdfd;
+      font-weight: 600;
+      cursor: pointer;
+      outline: none;
+    }
+
+    select:focus {
+      border-color: #667eea;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      resize: vertical;
+      border-radius: 12px;
+      border: 2px solid #e5e7eb;
+      background: #fafafa;
+      padding: 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12px;
+      line-height: 1.35;
+      transition: border-color 0.2s ease;
+      box-sizing: border-box;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .small {
+      font-size: 12px;
+      color: #6b7280;
+      margin-top: 4px
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px
+    }
+
+    button {
+      appearance: none;
+      border: 2px solid transparent;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      padding: 11px 18px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    button.secondary {
+      background: #fff;
+      color: #667eea;
+      border: 2px solid #667eea;
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+    }
+
+    button.secondary:hover {
+      background: #f9fafb;
+    }
+
+    button.small-btn {
+      padding: 6px 12px;
+      font-size: 13px;
+      border-radius: 8px;
+    }
+
+    button:active {
+      transform: translateY(0px)
+    }
+
+    .error {
+      color: #dc2626;
+      font-size: 12px;
+      margin-top: 8px;
+      white-space: pre-wrap;
+      font-weight: 600
+    }
+
+    .ok {
+      color: #059669;
+      font-size: 12px;
+      margin-top: 8px;
+      font-weight: 600
+    }
+
+    .val-card {
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      background: #fafafa;
+    }
+
+    .value {
+      padding: 10px;
+      border-radius: 8px;
+      border: 2px dashed #d1d5db;
+      background: #fff;
+      min-height: 40px;
+      white-space: pre-wrap;
+      line-height: 1.5;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .value:hover {
+      background: #f3f4f6;
+      border-color: #9ca3af;
+    }
+
+    .lock {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: #6b7280;
+      user-select: none;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 8px;
+      transition: background 0.2s ease;
+    }
+
+    .lock:hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
+
+    .lock input {
+      transform: translateY(1px);
+      cursor: pointer;
+      width: 16px;
+      height: 16px;
+    }
+
+    .brief {
+      margin-top: 16px;
+      padding: 18px;
+      border-radius: 14px;
+      border: 2px solid #e5e7eb;
+      background: #fafafa;
+      white-space: pre-wrap;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .toast {
+      margin-left: auto;
+      color: #059669;
+      font-size: 13px;
+      display: none;
+      font-weight: 600
+    }
+
+    .toast.show {
+      display: inline
+    }
+
+    .stats-panel {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fff;
+      padding: 12px 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+      border: 1px solid #e5e7eb;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .history-item {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 10px;
+      font-size: 13px;
+      white-space: pre-wrap;
+    }
+
+    .history-date {
+      font-size: 11px;
+      color: #6b7280;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Générateur de briefs LinkedIn</h1>
+        <div class="hint">4 angles de contenu pour ne plus chercher l'inspiration. Piloté par JSON.</div>
+      </div>
+    </header>
+
+    <div class="stats-panel">
+      <div style="font-size:15px;color:#374151;">
+        <b>🚀 Posts générés cette semaine :</b> <span id="weekCount"
+          style="color:#059669;font-weight:800;font-size:18px;">0</span>
+      </div>
+      <div style="font-size:14px;color:#6b7280;">
+        ⏳ Timing de pub opti : <b>Mardi et Jeudi matin (8h-11h)</b>
+      </div>
+    </div>
+
+    <div class="two">
+      <!-- LEFT: JSON inputs -->
+      <section class="card">
+        <div class="accordion-header collapsed" id="accordionJsonHeader">
+          <div class="accordion-title">
+            <span>📝</span>
+            <span>1) Tes listes JSON (Configurations)</span>
+          </div>
+          <div class="accordion-icon">▼</div>
+        </div>
+
+        <div class="accordion-content collapsed" id="accordionJsonContent">
+          <div class="row" style="background: #f3f4f6; padding: 12px; border-radius: 12px;">
+            <div class="label" style="font-size: 14px;">🛠 Configurer l'angle :</div>
+            <select id="configAngleSelect">
+              <option value="angle1">1. Peur / Blocage</option>
+              <option value="angle2">2. Cas client</option>
+              <option value="angle3">3. Conseil pratique</option>
+              <option value="angle4">4. Erreur courante</option>
+            </select>
           </div>
 
-          <div class="accordion-content" id="accordionJsonContent">
-          <div class="grid">
-            <div>
-              <div class="label">Acteurs</div>
-              <textarea id="jsonActors" spellcheck="false"></textarea>
-              <div class="small">Ex: métiers, secteurs, personas.</div>
-            </div>
-            <div>
-              <div class="label">Situations</div>
-              <textarea id="jsonSituations" spellcheck="false"></textarea>
-              <div class="small">Ex: “site lent”, “dépend d'une plateforme”, etc.</div>
-            </div>
-            <div>
-              <div class="label">Conséquences business</div>
-              <textarea id="jsonConsequences" spellcheck="false"></textarea>
-              <div class="small">Ex: “perte de devis”, “prospects fuient”, etc.</div>
-            </div>
-            <div>
-              <div class="label">Déclic / insight</div>
-              <textarea id="jsonInsights" spellcheck="false"></textarea>
-              <div class="small">Ex: “le problème n'était pas X mais Y”.</div>
-            </div>
+          <div id="jsonGrid" class="grid">
+            <!-- Dynamically injected textareas -->
           </div>
 
           <div class="actions">
             <button id="btnApply">Appliquer les JSON</button>
-            <button id="btnReset" class="secondary">Réinitialiser (exemple)</button>
-            <button id="btnExport" class="secondary">Exporter mes JSON</button>
-            <span id="toast" class="toast">Copié ✅</span>
+            <button id="btnReset" class="secondary">Réinitialiser (tout)</button>
+            <button id="btnExport" class="secondary">Exporter</button>
+            <span id="toastExport" class="toast">Copié ✅</span>
           </div>
 
-          <div id="status" class="small"></div>
+          <div id="status" class="small" style="margin-top:10px;"></div>
           <div id="errors" class="error" style="display:none"></div>
+        </div>
+      </section>
+
+      <!-- RIGHT: Generator -->
+      <section class="card">
+        <div class="accordion-header" id="accordionGenHeader">
+          <div class="accordion-title">
+            <span>✨</span>
+            <span>2) Génération</span>
           </div>
-        </section>
+          <div class="accordion-icon">▼</div>
+        </div>
 
-        <!-- RIGHT: Generator -->
-        <section class="card">
-          <div class="accordion-header" id="accordionGenHeader">
-            <div class="accordion-title">
-              <span>✨</span>
-              <span>2) Génération</span>
-            </div>
-            <div class="accordion-icon">▼</div>
+        <div class="accordion-content" id="accordionGenContent">
+          <div class="row" style="background: #eef2ff; padding: 12px; border-radius: 12px; border: 1px solid #c7d2fe;">
+            <div class="label" style="font-size: 14px; color: #4338ca;">🎯 Angle du post :</div>
+            <select id="genAngleSelect" style="border-color: #a5b4fc;">
+              <option value="random">🎲 Aléatoire (Surprise !)</option>
+              <option value="angle1">1. Peur / Blocage</option>
+              <option value="angle2">2. Cas client</option>
+              <option value="angle3">3. Conseil pratique</option>
+              <option value="angle4">4. Erreur courante</option>
+            </select>
           </div>
 
-          <div class="accordion-content" id="accordionGenContent">
-          <div class="grid">
-            <div class="card" data-key="actor">
-              <div class="row">
-                <div class="label">Acteur</div>
-                <label class="lock"><input type="checkbox" class="lockToggle" /> verrouiller</label>
-              </div>
-              <div class="value" id="actorValue">-</div>
-            </div>
+          <div id="genAngleTitle"
+            style="margin-top:16px; font-weight:700; color:#374151; font-size:15px; display:none;"></div>
 
-            <div class="card" data-key="situation">
-              <div class="row">
-                <div class="label">Situation</div>
-                <label class="lock"><input type="checkbox" class="lockToggle" /> verrouiller</label>
-              </div>
-              <div class="value" id="situationValue">-</div>
-            </div>
-
-            <div class="card" data-key="consequence">
-              <div class="row">
-                <div class="label">Conséquence</div>
-                <label class="lock"><input type="checkbox" class="lockToggle" /> verrouiller</label>
-              </div>
-              <div class="value" id="consequenceValue">-</div>
-            </div>
-
-            <div class="card" data-key="insight">
-              <div class="row">
-                <div class="label">Déclic</div>
-                <label class="lock"><input type="checkbox" class="lockToggle" /> verrouiller</label>
-              </div>
-              <div class="value" id="insightValue">-</div>
-            </div>
+          <div id="genGrid" class="grid">
+            <!-- Dynamically injected generator cards based on chosen angle -->
           </div>
 
           <div class="actions">
-            <button id="btnGenerate">Générer</button>
+            <button id="btnGenerate">Générer 🔥</button>
             <button id="btnReroll" class="secondary">Reroll (non verrouillés)</button>
             <button id="btnCopy" class="secondary">Copier le brief</button>
+            <span id="toastCopy" class="toast">Copié ✅</span>
           </div>
 
-          <div class="brief" id="briefText">1) Applique tes JSON, puis 2) clique sur “Générer”.</div>
-          <div class="small">
-            Conseil: verrouille "Acteur", puis "Reroll" jusqu'à un combo qui te plaît.
+          <div class="brief" id="briefText">Choisis un angle ou "Aléatoire" puis clique sur "Générer".</div>
+          <div class="small" style="margin-top:12px; font-style: italic;">
+            Conseil: verrouille certaines variables (ex: Acteur) avec la case "verrouiller", puis "Reroll" pour chercher
+            les meilleures combinaisons.
           </div>
-          </div>
-        </section>
-      </div>
+        </div>
+      </section>
     </div>
 
-    <script>
-      const STORAGE_KEY = "linkedinBriefGen_v1";
-      const LOCKS_KEY = "linkedinBriefGen_locks_v1";
+    <!-- History Section -->
+    <section class="card" style="margin-top:20px;">
+      <div class="accordion-header collapsed" id="accordionHistoryHeader">
+        <div class="accordion-title">
+          <span>🕰</span>
+          <span>3) Historique récent</span>
+        </div>
+        <div class="accordion-icon">▼</div>
+      </div>
+      <div class="accordion-content collapsed" id="accordionHistoryContent">
+        <div id="historyList">
+          <!-- Dynamically injected history -->
+        </div>
+        <button id="btnClearHistory" class="secondary small-btn" style="margin-top:10px;">Vider l'historique</button>
+      </div>
+    </section>
+  </div>
 
-      // Exemple par défaut (sert aussi de reset)
-      const DEFAULTS = {
+  <script>
+    const STORAGE_KEY = "linkedinBriefGen_v3";
+    const LOCKS_KEY = "linkedinBriefGen_locks_v3";
+    const HISTORY_KEY = "linkedinBriefGen_history_v1";
+
+    const CONFIG = {
+      angle1: {
+        name: "Peur / Blocage",
+        vars: [
+          { id: "actors", label: "Acteurs", hint: "métiers, personas..." },
+          { id: "fears", label: "Peurs / Croyances", hint: "ce qu'ils croient à tort..." },
+          { id: "explanations", label: "Explications", hint: "le retournement de situation..." },
+          { id: "examples", label: "Exemples / Preuves", hint: "preuve sociale ou tip concret..." }
+        ]
+      },
+      angle2: {
+        name: "Cas client",
+        vars: [
+          { id: "clients", label: "Clients / Secteurs", hint: "typologie de client..." },
+          { id: "problems", label: "Problèmes", hint: "ce qui pêchait avant..." },
+          { id: "solutions", label: "Solutions", hint: "ce qui a été mis en place..." },
+          { id: "results", label: "Résultats", hint: "les chiffres finaux..." },
+          { id: "insights", label: "Déclics / Insights", hint: "la grande leçon tirée..." }
+        ]
+      },
+      angle3: {
+        name: "Conseil pratique",
+        vars: [
+          { id: "actors", label: "Acteurs", hint: "cibles du conseil..." },
+          { id: "situations", label: "Situations / Douleurs", hint: "contexte actuel difficile..." },
+          { id: "tips", label: "Astuces (3 tirées)", hint: "toutes les actions possibles..." },
+          { id: "ctas", label: "Call-to-actions", hint: "fin du post (question/invite)..." }
+        ]
+      },
+      angle4: {
+        name: "Erreur courante",
+        vars: [
+          { id: "actors", label: "Acteurs", hint: "qui fait l'erreur..." },
+          { id: "errors", label: "Erreurs", hint: "l'erreur spécifique..." },
+          { id: "consequences", label: "Conséquences", hint: "l'effet papillon destructeur..." },
+          { id: "solutions", label: "Insights / Solutions", hint: "comment corriger le tir..." }
+        ]
+      }
+    };
+
+    const DEFAULTS = {
+      angle1: {
         actors: [
-          "Artisane papetière",
-          "Menuisier / ébéniste",
-          "PME industrielle (B2B)",
-          "Cordonnière",
-          "Coach / thérapeute",
-          "Restaurant",
-          "Domaine viticole"
+          "Les petits restaurants", "Les artisans", "Les gîtes ruraux", "Les petits hôtels", "Les commerçants locaux", "Les entrepreneurs solo", "Les petites structures", "Les services locaux", "Les créateurs/artisans", "Les prestataires indépendants", "Les petits commerces", "Les gérants de chambres d'hôtes", "Les professionnels du tourisme", "Les petites PME"
         ],
-        situations: [
-          "Dépend d'une plateforme (Etsy / Leboncoin) pour vendre",
-          "A un site en ligne depuis 3 ans, mais zéro appel",
-          "Site inutilisable sur mobile",
-          "Site très lent à cause d'images trop lourdes",
-          "Invisible sur Google sur 'ville + métier'",
-          "On ne comprend pas ce que l'entreprise fait en 10 secondes"
+        fears: [
+          "qu'un site internet c'est trop compliqué", "qu'un bon site coûte 5000€ minimum", "que ça prend 6 mois pour avoir un site", "qu'ils ont besoin d'une agence parisienne", "que c'est trop technique", "qu'ils vont devoir faire ça tous seuls", "qu'Internet ça ne marche que pour les grandes entreprises", "que personne ne les trouvera de toute façon", "que c'est juste une mode et que ça ne change rien", "qu'un site c'est un truc qu'il faut maintenir tout le temps", "que personne de leur clientèle n'est sur Internet", "qu'ils n'ont pas assez de budget pour faire ça bien", "qu'un site c'est réservé aux gens qui savent coder", "que ça va leur demander trop de temps à gérer"
         ],
-        consequences: [
-          "Des prospects vont chez un concurrent plus visible",
-          "Perte de crédibilité avant même le premier contact",
-          "Moins d'appels, moins de devis, moins de ventes",
-          "Dépendance aux règles et frais d'une plateforme",
-          "Temps perdu avec des demandes non qualifiées"
+        explanations: [
+          "Un site peut être simple, efficace, et pas cher. C'est juste une question de stratégie, pas de budget.", "La plupart des sites sont lents parce qu'ils sont mal faits, pas parce qu'il faut un budget énorme.", "Un bon site local, c'est 2-3 semaines. Pas 6 mois.", "Les agences parisiennes ne comprennent pas ton métier. Un local, oui.", "La technologie, c'est juste un outil. Ce qui compte, c'est le résultat pour ton activité.", "Tu n'as pas besoin de tout faire toi-même. C'est pour ça qu'il y a des consultants.", "Les petites structures locales vendent PLUS en ligne. Elles ont juste pas commencé.", "Si tu expliques clairement ce que tu fais, les gens te trouvent. Et ils achètent.", "Un site n'est pas une mode. C'est devenu un standard. Pas avoir de site, c'est perdre de l'argent.", "Un site bien pensé, c'est autonome. Une fois fait, ça tourne. Tu peux le mettre à jour toi-même en 5 min.", "Tes clients sont DÉJÀ sur Internet. Même les ruraux. Ils te cherchent juste pas sur Google.", "Le budget n'est jamais le problème. C'est toujours une question de priorité.", "Tu n'as pas besoin de savoir coder. Tu as juste besoin de quelqu'un qui peut traduire ton métier en site.", "Une fois le site lancé, c'est quelques minutes par mois. Pas des heures."
+        ],
+        examples: [
+          "J'ai fait 15+ petits restaurants avec des budgets modestes. Tous ont eu plus de réservations.", "Un gîte rural sans site perd 30% de ses clients potentiels. C'est mesurable.", "Les artisans qui ont un site génèrent 2x plus de demandes que ceux qui n'en ont pas.", "Tes clients te cherchent déjà en ligne. Ils trouvent juste ton site (ou ton concurrent).", "Un site bien pensé, c'est pas du luxe. C'est un outil de vente comme ta vitrine physique.", "J'ai accompagné des petits hôtels qui pensaient que c'était trop cher. Ils ont découvert que le vrai coût c'était de rien faire.", "Les commerçants qui se disaient 'Mon client n'est pas sur Internet' ont changé d'avis quand ils ont vu les résultats.", "Un site peut être lancé en 2 semaines si on sait ce qu'on fait. La question c'est : pourquoi tu attends encore ?", "Même en zone rurale, les gens tapent sur Google avant d'appeler. Si tu y es pas, ton concurrent l'est.", "Un artisan m'a dit 'Je fais du beau travail, je n'ai pas besoin de marketing'. 6 mois plus tard, son client avait fermé. Internet c'est pas optionnel.", "Les petites structures qui ont un site se demandent pourquoi elles y ont pas pensé plus tôt. Les autres se demandent pourquoi ça change rien.", "Ceux qui pensent 'mon site sera trop complexe' sont souvent surpis : ce qu'il y a de plus puissant c'est la simplicité."
+        ]
+      },
+      angle2: {
+        clients: [
+          "Un gîte en Yonne", "Un restaurant local", "Un artisan réparateur", "Un petit hôtel rural", "Un salon de coiffure", "Un commerce artisanal", "Une petite structure locale", "Un prestataire de services", "Un chambres d'hôtes", "Un petit bar/café", "Un artisan créateur", "Un service touristique", "Un commerçant indépendant", "Une petite épicerie fine"
+        ],
+        problems: [
+          "Site ancien, lent, personne ne réservait dessus", "Pas de site du tout, perdait 30% de clients", "Site créé par un ami, non optimisé, invisible", "Site beau mais personne ne savait comment commander", "Dépendait d'une plateforme tiers, avait pas le contrôle", "Site complexe, impossible à mettre à jour", "Bonne présence sur les réseaux, mais zéro conversions", "Site qui chargeait en 8 secondes, les clients partaient", "Site sur mobile était un cauchemar", "Pas de visibilité locale sur Google", "Téléphone qui sonnait pas assez", "Pas d'agenda de réservation en ligne", "Clients qui partaient avant de remplir le formulaire", "Pas moyen de montrer la qualité du travail"
+        ],
+        solutions: [
+          "Refonte complète : site rapide, belles photos, réservation en 3 clics", "Création d'un site simple, optimisé SEO local, visible sur Google", "Passage à une solution moderne, rapide, maintenable par le client", "Restructuration UX : parcours client simplifié", "Création d'une présence web indépendante, avec outils propres", "Nouvelle architecture, facile à mettre à jour", "Site à l'image de la marque + intégration réseaux + SEO", "Optimisation radicale : -6 secondes de temps de chargement", "Design responsive impeccable, testé sur tous les appareils", "Optimisation SEO locale avec Google My Business intégré", "Ajout de CTA clairs et boutons d'appel en évidence", "Intégration d'un système de réservation automatisé", "Landing page convaincante avec social proof et témoignages", "Portfolio ou galerie mettant en avant les réalisations"
+        ],
+        results: [
+          "+40% de réservations via le site en 1 mois", "+25% de demandes de devis après 3 mois", "Première page Google pour le secteur local", "+50% de clics depuis les résultats de recherche", "Site autonome, client peut mettre à jour lui-même", "Temps de chargement divisé par 2", "Conversions x3 : plus de clics = plus d'appels", "Le propriétaire a dû embaucher pour gérer la charge", "Mobile conversions en hausse de 60%", "Appels de réservation doublés en 3 mois", "+35% de trafic organique en 2 mois", "Réservations automatisées = moins de travail administratif", "Taux de rebond divisé par 3", "Client fidélisé sur 4 ans et continue de nous confier ses projets"
         ],
         insights: [
-          "Le problème n'était pas le design. C'était la clarté + l'accès au contact.",
-          "Tant que personne ne se plaint, on croit que tout va bien. En réalité, les gens partent en silence.",
-          "Le vrai sujet: filtrer les mauvais prospects, pas juste 'avoir plus de trafic'.",
-          "Un seul détail (téléphone, horaires, zone) faisait perdre des clients chaque semaine."
+          "Ça m'a rappelé que j'aide des gens, pas juste des sites.", "Le vrai coût ? Ne rien faire et perdre des clients.", "C'est pas du luxe, c'est un outil de travail.", "Quand tu fixes le problème, tout change rapidement.", "L'impact est visible en quelques semaines, pas mois.", "Un site mal fichu coûte plus cher qu'un site bien fait.", "Le local a un avantage : les gens cherchent à proximité.", "Ce n'est jamais le budget qui bloque. C'est la priorité.", "Un site n'est pas un luxe ou un hobby. C'est un outil de vente.", "Les petites structures locales ont un atout : la confiance. Faut juste la montrer en ligne.", "Quand tu comprends le métier avant de coder, tout est plus facile.", "J'ai réalisé que les vrais clients ne se soucient pas de la tech. Ils se soucient des résultats."
         ]
-      };
-
-      let DATA = structuredClone(DEFAULTS);
-
-      // ---------- Utils ----------
-      function $(id){ return document.getElementById(id); }
-
-      function toast() {
-        const t = $("toast");
-        t.classList.add("show");
-        setTimeout(() => t.classList.remove("show"), 1200);
+      },
+      angle3: {
+        actors: [
+          "Si tu es artisan/commerçant", "Si tu es restaurateur", "Si tu es gérant de gîte", "Si tu es entrepreneur solo", "Si tu es indépendant", "Si tu tiens un petit hôtel", "Si tu offres un service local", "Si tu crées en ligne", "Si tu es prestataire de services", "Si tu diriges une petite PME", "Si tu es créateur/artisan", "Si tu as une petite structure locale", "Si tu es nouveau dans le digital", "Si tu veux augmenter tes revenus"
+        ],
+        situations: [
+          "et t'as pas encore de site internet", "et tu penses que ça coûte trop cher", "et t'as pas le temps de t'occuper d'un site", "et ton site n'apporte aucun client", "et tu dépends 100% des réseaux sociaux", "et tu viens de commencer ton activité", "et tu veux être trouvable en ligne", "et tu veux une présence digitale maîtrisée", "et tu ne sais pas par où commencer", "et tu as un site mais tu le négliges", "et tu te demandes si ça en vaut vraiment la peine", "et tes clients potentiels ne te trouvent pas", "et tu veux une solution simple sans prise de tête", "et tu cherches une vraie différenciation"
+        ],
+        tips: [
+          "Crée une page Google My Business (gratuit, 15 min. Les gens te trouvent quand ils te cherchent)", "Récupère les avis clients (sur Google, sur ta page. Ça prouve que tu existes et tu es bon)", "Pense à ton site comme un outil de vente, pas une vitrine (les gens doivent savoir ce que tu fais, pourquoi tu es mieux, comment te contacter)", "Commençe simple : une page, ta photo, ce que tu fais, comment commander", "Mets à jour ton site aussi souvent que tu mets à jour tes réseaux", "Un site lent coûte plus cher qu'un site bien fait", "Inverse le problème : tu n'as pas assez de clients ? C'est peut-être que personne ne te trouve", "Google le sait si tu existes, mais pas les gens. Dis-le.", "Un site, c'est pas optionnel. C'est un outil comme ta vitrine physique", "Fais un test : ajoute un bouton 'Réserver' ou 'Commander' et regarde ce qui se passe", "Trop de sites beaux mais zéro conversion. Tu veux vendre, pas impressionner.", "Tes clients idéaux te cherchent déjà. Ils trouvent juste ton concurrent.", "Identifie ton vrai problème : absence de site ? Site lent ? Site invisible ? Pas de call-to-action ?", "Le problème n'est presque jamais 'Je dois faire un site plus beau'", "C'est presque toujours : 'Personne ne me trouve' ou 'Personne ne sait quoi faire une fois sur le site'", "Tes réseaux c'est cool, mais tu ne les contrôles pas. Un site, c'est TON espace.", "Réseaux + site = puissance. Réseaux seuls = risqué.", "Mets du trafic depuis tes réseaux vers ton site, pas l'inverse", "Demande à 5 clients pourquoi ils t'ont choisi. Écris leur réponse sur ton site.", "Les témoignages ça vend plus que n'importe quelle belle photo", "La confiance > l'esthétique. Toujours.", "Regarde ce que font tes 3 meilleurs concurrents en ligne", "Note ce qui les rend trouvables et ce qui les rend cliquables", "Fais mieux, mais reste toi-même", "Teste un appel à l'action clair : 'Réserver' ou 'Appeler' ou 'Envoyer un message'", "Pas de bouton = pas de vente. Les gens ne savent pas quoi faire.", "Rends l'action facile et évidente", "Parle de ce que tu fais en termes de résultat client, pas de features", "Pas 'Je crée des sites'. Mais 'Je vous aide à attirer plus de clients'", "Les gens achètent un résultat, pas une technologie", "Mesure : combien de personnes visitent ? D'où viennent-elles ? Qu'est-ce qu'elles font ?", "Si tu n'as pas de chiffres, tu décides à l'aveugle", "Même un petit site peut avoir des statistiques simples", "Lance avec 80% de ce que tu veux faire. Améliore après, quand tu as du feedback réel", "La perfection c'est l'ennemi du démarrage", "Un site pas parfait qui attire clients = mieux qu'un site parfait qui repousse"
+        ],
+        ctas: [
+          "Besoin d'en discuter ? On peut en parler en 20 min.", "C'est peut-être le moment de te poser la bonne question.", "Intéressé ? Je peux t'aider à identifier ton vrai blocage.", "On peut en parler. Pas de bullshit, juste du concret.", "Envie d'explorer ? Je suis dispo pour discuter.", "Si tu veux clarifier, on peut prendre 30 min pour débriefer.", "Pas sûr par où commencer ? Parlons-en.", "Tu penses que c'est pas pour toi ? C'est peut-être que tu l'as pas vu sous le bon angle.", "Curieux ? Mon agenda est dispo pour une discussion rapide.", "Vous en doutiez ? J'ai 50+ cas qui prouvent que c'est possible pour vous aussi."
+        ]
+      },
+      angle4: {
+        actors: [
+          "Les petits restaurants", "Les artisans", "Les petites structures", "Les commerçants locaux", "Les gérants de gîtes", "Les indépendants", "Les petits entrepreneurs", "Les prestataires de services", "Les petits hôtels", "Les créateurs en ligne", "Les petites PME", "Les services touristiques", "Les commerces artisanaux", "Les professionnels du service"
+        ],
+        errors: [
+          "un menu Instagram à jour mais un site qu'ils mettent jamais à jour", "un site 'beau' mais où personne ne sait comment réserver/commander", "un site sur une plateforme gratuite qu'ils ne contrôlent pas", "un site qu'ils ont fait eux-mêmes et qui charge en 8 secondes", "un site optimisé pour la beauté, pas pour les résultats", "zéro présence en ligne et ils se demandent pourquoi personne n'achète", "un site avec 100 informations quand 3 suffiraient", "mettre en ligne un site et ne jamais le regarder après", "faire des photos pourries quand des bonnes photos = plus de ventes", "avoir un super site mais aucun moyen de montrer le résultat de son travail", "un site 'fait par un développeur' que tu ne peux pas mettre à jour", "inviter les gens sur ton site mais oublier le bouton 'appeler' ou 'réserver'", "ignorer le mobile alors que 80% des visiteurs viennent de téléphone", "croire que les réseaux sociaux suffisent et négliger le site"
+        ],
+        consequences: [
+          "Les clients voient tes beaux plats sur Insta, cliquent sur ton site, voient une photo de 2019, et partent chez le concurrent.", "Beaucoup de visites mais zéro conversions. C'est pas qu'on s'en fout, c'est que tu leur donnes pas envie.", "Tu dépends 100% d'une plateforme. Elle change les règles ? Tu es coincé.", "Personne ne reste sur le site. Trop lent = perte immédiate de clients.", "Un site beau c'est cool, mais si personne ne le trouve, à quoi ça sert ?", "Les gens te trouvent pas en ligne donc ils achètent ailleurs. C'est mesurable.", "Les visiteurs se perdent. Trop d'info = paralysie et abandon du site.", "Un site c'est pas un 'set and forget'. Faut l'entretenir comme ton resto : régulièrement.", "Les mauvaises photos = clients qui pensent que ton service est mauvais. Même si c'est faux.", "Ton travail parle pour lui-même en vrai, mais online tu dois le montrer. Sinon personne ne le croit.", "Tu es dépendant d'une personne qui s'en fout de ton business. C'est dangereux.", "Des visiteurs arrivent, ont envie d'acheter, mais ne trouvent pas où/comment. Ils partent.", "Tu perds 80% de tes clients potentiels car le site est imbitable sur téléphone.", "Un jour la plateforme change d'algo, tes réseaux cessent de tourner, et tu n'as plus rien."
+        ],
+        solutions: [
+          "Un site, c'est un outil. Il faut l'entretenir comme ton resto : régulièrement.", "La beauté sans résultats = du luxe. Les résultats sans beauté = du business.", "Les gens ne sont pas sur ton site pour admirer. Ils sont là pour savoir si tu peux les aider.", "Si tes réseaux sont bons mais ton site ne convertit pas, le problème c'est pas les réseaux.", "Un site local n'a pas besoin d'être parfait. Il a juste besoin de marcher.", "Ton vrai concurrent n'est pas le mec en face. C'est celui qu'on trouve en ligne et qui convertit.", "Optimiser un site lent coûte moins cher que de perdre des clients à cause de la vitesse.", "Un site qu'on met à jour tous les 6 mois c'est un site mort pour Google et pour tes clients.", "Montrer ton travail c'est pas du narcissisme. C'est du business. Fais-le.", "Les meilleures photos = les meilleures ventes. C'est aussi simple que ça.", "Un site que tu possèdes vraiment = tranquillité d'esprit et indépendance financière.", "Pas de bouton 'appeler' = tu rejettes activement tes clients potentiels.", "Mobile first ou mobile failure. Il n'y a pas de milieu.", "Les réseaux sont importants. Mais un site c'est ton assurance-vie digitale."
+        ]
       }
+    };
 
-      function pick(arr){
-        return arr[Math.floor(Math.random() * arr.length)];
-      }
+    let DATA = structuredClone(DEFAULTS);
+    let CURRENT_CONFIG_ANGLE = "angle1";
+    let CURRENT_GEN_ANGLE = "angle1";
 
-      function getLocks() {
-        const locks = {};
-        document.querySelectorAll("[data-key]").forEach(card => {
-          const key = card.getAttribute("data-key");
-          locks[key] = card.querySelector(".lockToggle").checked;
-        });
-        return locks;
-      }
+    function $(id) { return document.getElementById(id); }
 
-      function saveLocks() {
-        const locks = getLocks();
-        localStorage.setItem(LOCKS_KEY, JSON.stringify(locks));
-      }
+    function pick(arr) {
+      if (!arr || !arr.length) return "-(vide)-";
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
 
-      function loadLocks() {
-        const raw = localStorage.getItem(LOCKS_KEY);
-        if (!raw) return;
-        try {
-          const locks = JSON.parse(raw);
-          document.querySelectorAll("[data-key]").forEach(card => {
-            const key = card.getAttribute("data-key");
-            if (locks[key] !== undefined) {
-              card.querySelector(".lockToggle").checked = locks[key];
-            }
-          });
-        } catch {
-          // ignore
+    function getLocks() {
+      const raw = localStorage.getItem(LOCKS_KEY);
+      if (!raw) return {};
+      try { return JSON.parse(raw); } catch { return {}; }
+    }
+
+    function saveLocks() {
+      // Collect current UI locks
+      const locks = getLocks();
+      document.querySelectorAll(".lockToggle").forEach(checkbox => {
+        locks[checkbox.dataset.lockKey] = checkbox.checked;
+      });
+      localStorage.setItem(LOCKS_KEY, JSON.stringify(locks));
+    }
+
+    function applyLocksToUI() {
+      const locks = getLocks();
+      document.querySelectorAll(".lockToggle").forEach(checkbox => {
+        if (locks[checkbox.dataset.lockKey] !== undefined) {
+          checkbox.checked = locks[checkbox.dataset.lockKey];
         }
+      });
+    }
+
+    function showStatus(msg, ok = true) {
+      const s = $("status");
+      s.className = ok ? "ok" : "error";
+      s.textContent = msg;
+      setTimeout(() => { s.textContent = ""; }, 4000);
+    }
+
+    function showErrors(lines) {
+      const box = $("errors");
+      if (!lines.length) {
+        box.style.display = "none";
+        box.textContent = "";
+        return;
       }
+      box.style.display = "block";
+      box.textContent = lines.join("\n");
+    }
 
-      function setText(id, txt){ $(id).textContent = txt; }
+    // --- JSON CONFIG LOGIC ---
 
-      function showErrors(lines){
-        const box = $("errors");
-        if (!lines.length) {
-          box.style.display = "none";
-          box.textContent = "";
-          return;
+    function initJsonConfig() {
+      renderJsonConfigFields();
+      $("configAngleSelect").addEventListener("change", (e) => {
+        CURRENT_CONFIG_ANGLE = e.target.value;
+        renderJsonConfigFields();
+      });
+    }
+
+    function renderJsonConfigFields() {
+      const grid = $("jsonGrid");
+      grid.innerHTML = "";
+      const vars = CONFIG[CURRENT_CONFIG_ANGLE].vars;
+
+      vars.forEach(v => {
+        const div = document.createElement("div");
+        div.innerHTML = `
+            <div class="row" style="margin-bottom:4px;">
+              <div class="label">${v.label}</div>
+            </div>
+            <textarea id="json_${v.id}" spellcheck="false"></textarea>
+            <div class="small">Ex: ${v.hint}</div>
+          `;
+        grid.appendChild(div);
+      });
+
+      // Fill textareas with current DATA
+      const angleData = DATA[CURRENT_CONFIG_ANGLE] || {};
+      vars.forEach(v => {
+        $(`json_${v.id}`).value = JSON.stringify(angleData[v.id] || [], null, 2);
+      });
+    }
+
+    function parseJsonArray(text, fieldName) {
+      let parsed;
+      try { parsed = JSON.parse(text); } catch (e) { throw new Error(`${fieldName}: JSON invalide (${e.message})`); }
+      if (!Array.isArray(parsed)) throw new Error(`${fieldName}: doit être un tableau JSON (ex: ["a","b"])`);
+      const cleaned = parsed.map(x => (typeof x === "string" ? x.trim() : x)).filter(x => typeof x === "string" && x.length > 0);
+      if (cleaned.length === 0) throw new Error(`${fieldName}: tableau vide`);
+      return cleaned;
+    }
+
+    function applyFromTextareas() {
+      const errors = [];
+      try {
+        const vars = CONFIG[CURRENT_CONFIG_ANGLE].vars;
+        const newAngleData = {};
+        for (let v of vars) {
+          newAngleData[v.id] = parseJsonArray($(`json_${v.id}`).value, v.label);
         }
-        box.style.display = "block";
-        box.textContent = lines.join("\n");
-      }
-
-      function showStatus(msg, ok=true){
-        const s = $("status");
-        s.className = ok ? "ok" : "error";
-        s.textContent = msg;
-      }
-
-      // ---------- JSON load/apply ----------
-      function parseJsonArray(text, fieldName){
-        let parsed;
-        try {
-          parsed = JSON.parse(text);
-        } catch (e) {
-          throw new Error(`${fieldName}: JSON invalide (${e.message})`);
-        }
-        if (!Array.isArray(parsed)) {
-          throw new Error(`${fieldName}: doit être un tableau JSON (ex: ["a","b"])`);
-        }
-        const cleaned = parsed
-          .map(x => (typeof x === "string" ? x.trim() : x))
-          .filter(x => typeof x === "string" && x.length > 0);
-
-        if (cleaned.length === 0) {
-          throw new Error(`${fieldName}: tableau vide (ou que des valeurs vides)`);
-        }
-        return cleaned;
-      }
-
-      function applyFromTextareas() {
-        const errors = [];
-        try {
-          const actors = parseJsonArray($("jsonActors").value, "Acteurs");
-          const situations = parseJsonArray($("jsonSituations").value, "Situations");
-          const consequences = parseJsonArray($("jsonConsequences").value, "Conséquences");
-          const insights = parseJsonArray($("jsonInsights").value, "Déclic");
-
-          DATA = { actors, situations, consequences, insights };
-          save();
-          showErrors([]);
-          showStatus(`OK - Listes appliquées. Acteurs: ${actors.length}, Situations: ${situations.length}, Conséquences: ${consequences.length}, Déclic: ${insights.length}`, true);
-
-          // petit confort: auto-génère après apply
-          generate({ force: true });
-        } catch (e) {
-          errors.push(e.message);
-          showErrors(errors);
-          showStatus("Corrige les erreurs JSON ci-dessus.", false);
-        }
-      }
-
-      function fillTextareasFromData(obj){
-        $("jsonActors").value = JSON.stringify(obj.actors, null, 2);
-        $("jsonSituations").value = JSON.stringify(obj.situations, null, 2);
-        $("jsonConsequences").value = JSON.stringify(obj.consequences, null, 2);
-        $("jsonInsights").value = JSON.stringify(obj.insights, null, 2);
-      }
-
-      function save(){
+        DATA[CURRENT_CONFIG_ANGLE] = newAngleData;
         localStorage.setItem(STORAGE_KEY, JSON.stringify(DATA));
-      }
 
-      function load(){
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return false;
-        try {
-          const obj = JSON.parse(raw);
-          // on valide vite fait
-          if (!obj || !Array.isArray(obj.actors) || !Array.isArray(obj.situations) || !Array.isArray(obj.consequences) || !Array.isArray(obj.insights)) {
-            return false;
-          }
-          DATA = {
-            actors: obj.actors.filter(s => typeof s === "string" && s.trim()),
-            situations: obj.situations.filter(s => typeof s === "string" && s.trim()),
-            consequences: obj.consequences.filter(s => typeof s === "string" && s.trim()),
-            insights: obj.insights.filter(s => typeof s === "string" && s.trim())
-          };
-          return DATA.actors.length && DATA.situations.length && DATA.consequences.length && DATA.insights.length;
-        } catch {
-          return false;
-        }
-      }
-
-      // ---------- Generation ----------
-      function generate({ force=false } = {}) {
-        // garde-fou
-        if (!DATA.actors?.length || !DATA.situations?.length || !DATA.consequences?.length || !DATA.insights?.length) {
-          setText("briefText", "Tes listes sont vides. Colle des JSON valides puis clique “Appliquer les JSON”.");
-          return;
-        }
-
-        const locks = getLocks();
-
-        if (force || !locks.actor) setText("actorValue", pick(DATA.actors));
-        if (force || !locks.situation) setText("situationValue", pick(DATA.situations));
-        if (force || !locks.consequence) setText("consequenceValue", pick(DATA.consequences));
-        if (force || !locks.insight) setText("insightValue", pick(DATA.insights));
-
-        const actor = $("actorValue").textContent;
-        const situation = $("situationValue").textContent;
-        const consequence = $("consequenceValue").textContent;
-        const insight = $("insightValue").textContent;
-
-        const brief =
-`BRIEF POST LINKEDIN
-
-Acteur - ${actor}
-Situation - ${situation}
-Conséquence - ${consequence}
-Déclic - ${insight}
-
-Mini-structure
-- 1 phrase terrain / observation
-- 2-3 lignes problème concret
-- 1 ligne impact business
-- 1 question de fin (discussion)`;
-
-        setText("briefText", brief);
-      }
-
-      async function copyText(text){
-        try {
-          await navigator.clipboard.writeText(text);
-          toast();
-        } catch {
-          alert("Copie impossible. Sélectionne le texte et copie manuellement.");
-        }
-      }
-
-      // Export: copie un objet JSON complet (pour filer à quelqu’un)
-      function exportJson() {
-        const payload = {
-          actors: DATA.actors,
-          situations: DATA.situations,
-          consequences: DATA.consequences,
-          insights: DATA.insights
-        };
-        copyText(JSON.stringify(payload, null, 2));
-        showStatus("Export copié dans le presse-papiers (objet JSON complet).", true);
-      }
-
-      // Reset: remet l’exemple
-      function resetToDefaults(){
-        DATA = structuredClone(DEFAULTS);
-        fillTextareasFromData(DATA);
-        save();
         showErrors([]);
-        showStatus("Réinitialisé sur l'exemple.", true);
+        showStatus(`OK - Listes sauvegardées pour [${CONFIG[CURRENT_CONFIG_ANGLE].name}].`, true);
+
+        // Force update gen UI if we just edited the active gen angle
+        const genVal = $("genAngleSelect").value;
+        if (genVal === CURRENT_CONFIG_ANGLE || (genVal === "random" && CURRENT_GEN_ANGLE === CURRENT_CONFIG_ANGLE)) {
+          generate({ force: true, skipAngleChange: true });
+        }
+      } catch (e) {
+        errors.push(e.message);
+        showErrors(errors);
+        showStatus("Besoins de corrections JSON.", false);
+      }
+    }
+
+    function exportJson() {
+      navigator.clipboard.writeText(JSON.stringify(DATA, null, 2)).then(() => {
+        const t = $("toastExport");
+        t.classList.add("show");
+        setTimeout(() => t.classList.remove("show"), 1500);
+      });
+    }
+
+    function resetData() {
+      if (!confirm("Réinitialiser TOUS les angles avec les listes par défaut (exemple) ?")) return;
+      DATA = structuredClone(DEFAULTS);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(DATA));
+      renderJsonConfigFields();
+      generate({ force: true, skipAngleChange: true });
+      showStatus("La configuration a été réinitialisée.", true);
+    }
+
+    // --- GENERATOR LOGIC ---
+
+    function initGen() {
+      $("genAngleSelect").addEventListener("change", () => {
         generate({ force: true });
+      });
+    }
+
+    function generate({ force = false, skipAngleChange = false } = {}) {
+      let dropdownVal = $("genAngleSelect").value;
+
+      if (!skipAngleChange) {
+        if (dropdownVal === "random") {
+          const keys = Object.keys(CONFIG);
+          CURRENT_GEN_ANGLE = keys[Math.floor(Math.random() * keys.length)];
+        } else {
+          CURRENT_GEN_ANGLE = dropdownVal;
+        }
       }
 
-      // ---------- Accordion ----------
-      function setupAccordion(headerId, contentId) {
-        const header = $(headerId);
-        const content = $(contentId);
+      const title = $("genAngleTitle");
+      title.style.display = "block";
+      title.textContent = "↳ Angle actif : " + CONFIG[CURRENT_GEN_ANGLE].name;
 
-        header.addEventListener("click", () => {
-          header.classList.toggle("collapsed");
-          content.classList.toggle("collapsed");
-        });
+      renderGenGrid(CURRENT_GEN_ANGLE);
+
+      const locks = getLocks();
+      const vars = CONFIG[CURRENT_GEN_ANGLE].vars;
+      const genData = DATA[CURRENT_GEN_ANGLE] || {};
+
+      vars.forEach(v => {
+        const lockKey = `${CURRENT_GEN_ANGLE}_${v.id}`;
+        const isLocked = locks[lockKey] === true;
+
+        const el = $(`val_${lockKey}`);
+        if (!el) return;
+
+        let pool = genData[v.id] || [];
+
+        if (v.id === "tips" && CURRENT_GEN_ANGLE === "angle3") {
+          // Pick 3 multi
+          if (force || !isLocked) {
+            let selected = [];
+            let tempPool = [...pool];
+            for (let i = 0; i < 3; i++) {
+              if (!tempPool.length) break;
+              let idx = Math.floor(Math.random() * tempPool.length);
+              selected.push(tempPool[idx]);
+              tempPool.splice(idx, 1);
+            }
+            el.innerHTML = selected.map((s, i) => `<div>${i + 1}️⃣ ${s}</div>`).join("");
+            el.setAttribute("data-raw", JSON.stringify(selected));
+          }
+        } else {
+          // Single pick
+          if (force || !isLocked) {
+            const picked = pick(pool);
+            el.textContent = picked;
+            el.setAttribute("data-raw", picked);
+          }
+        }
+      });
+
+      buildBriefString(CURRENT_GEN_ANGLE);
+    }
+
+    function renderGenGrid(angleId) {
+      const grid = $("genGrid");
+      // Only regenerate DOM if angle changed, to preserve locks UI instantly.
+      // Actually better to regenerate if grid is empty or checking a specific dataset attribute.
+      if (grid.dataset.current === angleId) {
+        applyLocksToUI();
+        return;
       }
 
-      // ---------- Events ----------
-      $("btnApply").addEventListener("click", applyFromTextareas);
-      $("btnReset").addEventListener("click", resetToDefaults);
-      $("btnExport").addEventListener("click", exportJson);
+      grid.innerHTML = "";
+      grid.dataset.current = angleId;
+      const vars = CONFIG[angleId].vars;
 
-      $("btnGenerate").addEventListener("click", () => generate({ force:true }));
-      $("btnReroll").addEventListener("click", () => generate({ force:false }));
-      $("btnCopy").addEventListener("click", () => copyText($("briefText").textContent));
+      vars.forEach(v => {
+        const lockKey = `${angleId}_${v.id}`;
+        const div = document.createElement("div");
+        div.className = "val-card";
+        div.innerHTML = `
+              <div class="row">
+                <div class="label">${v.label}</div>
+                <label class="lock">
+                  <input type="checkbox" class="lockToggle" data-lock-key="${lockKey}" /> 
+                  verrouiller
+                </label>
+              </div>
+              <div class="value" id="val_${lockKey}"></div>
+            `;
+        grid.appendChild(div);
+      });
 
-      // Écouter les changements sur les cases à cocher
+      // Listeners for locks
       document.querySelectorAll(".lockToggle").forEach(checkbox => {
         checkbox.addEventListener("change", saveLocks);
       });
 
-      // Setup accordions
+      applyLocksToUI();
+    }
+
+    function getRaw(lockKey) {
+      const el = $(`val_${lockKey}`);
+      return el ? el.getAttribute("data-raw") : "";
+    }
+
+    function buildBriefString(angleId) {
+      let text = "";
+      try {
+        if (angleId === "angle1") {
+          const actor = getRaw("angle1_actors");
+          const fear = getRaw("angle1_fears");
+          const explanation = getRaw("angle1_explanations");
+          const example = getRaw("angle1_examples");
+          text = `Beaucoup de ${actor} pensent que ${fear}.\nC'est faux.\n\n${explanation}\n\n${example}`;
+        } else if (angleId === "angle2") {
+          const client = getRaw("angle2_clients");
+          const problem = getRaw("angle2_problems");
+          const solution = getRaw("angle2_solutions");
+          const result = getRaw("angle2_results");
+          const insight = getRaw("angle2_insights");
+          text = `J'ai aidé ${client}.\n\nProblème : ${problem}\nSolution : ${solution}\nRésultat : ${result}\n\n${insight}`;
+        } else if (angleId === "angle3") {
+          const actor = getRaw("angle3_actors");
+          const situation = getRaw("angle3_situations");
+          const tips = JSON.parse(getRaw("angle3_tips") || "[]");
+          const cta = getRaw("angle3_ctas");
+          text = `Si tu es ${actor} et ${situation}, voici ${tips.length} trucs :\n\n`;
+          text += tips.map((t, i) => `${i + 1}️⃣ ${t}`).join("\n");
+          text += `\n\n${cta}`;
+        } else if (angleId === "angle4") {
+          const actor = getRaw("angle4_actors");
+          const error = getRaw("angle4_errors");
+          const consequence = getRaw("angle4_consequences");
+          const solution = getRaw("angle4_solutions");
+          text = `Les ${actor} qui perdent le plus de clients font cette erreur : ${error}\n\nRésultat : ${consequence}\n\n${solution}`;
+        }
+      } catch (e) {
+        text = "Erreur de génération. Vérifie que tes variables ne sont pas vides.";
+      }
+
+      $("briefText").textContent = text;
+    }
+
+    async function copyBrief() {
+      const text = $("briefText").textContent;
+      try {
+        await navigator.clipboard.writeText(text);
+        const t = $("toastCopy");
+        t.classList.add("show");
+        setTimeout(() => t.classList.remove("show"), 1500);
+
+        addHistory(text);
+      } catch {
+        alert("Erreur: Impossible de copier dans le presse-papiers.");
+      }
+    }
+
+    // --- HISTORY LOGIC ---
+
+    function renderHistory() {
+      const raw = localStorage.getItem(HISTORY_KEY);
+      const history = raw ? JSON.parse(raw) : [];
+      const list = $("historyList");
+
+      if (!history.length) {
+        list.innerHTML = `<div style="font-size:13px; color:#6b7280; font-style:italic;">Aucun historique récent. Copie un brief pour l'ajouter ici.</div>`;
+      } else {
+        list.innerHTML = "";
+        history.forEach(item => {
+          const d = new Date(item.date);
+          const formatOpt = { weekday: 'long', hour: '2-digit', minute: '2-digit', month: 'short', day: 'numeric' };
+          const ds = d.toLocaleDateString("fr-FR", formatOpt);
+
+          const elt = document.createElement("div");
+          elt.className = "history-item";
+          elt.innerHTML = `<div class="history-date">${ds}</div><div>${item.text}</div>`;
+          list.appendChild(elt);
+        });
+      }
+      updateWeekCount(history);
+    }
+
+    function addHistory(text) {
+      let history = [];
+      try { history = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]"); } catch { }
+
+      // Only add if not strictly identical to last one
+      if (!history.length || history[0].text !== text) {
+        history.unshift({ date: new Date().toISOString(), text: text });
+        if (history.length > 50) history.pop(); // keep 50
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+        renderHistory();
+      }
+    }
+
+    function updateWeekCount(history) {
+      const now = new Date();
+      // Start of current week (Monday)
+      const day = now.getDay() || 7;
+      const startOfWeek = new Date(now);
+      startOfWeek.setDate(now.getDate() - day + 1);
+      startOfWeek.setHours(0, 0, 0, 0);
+
+      let count = 0;
+      history.forEach(h => {
+        if (new Date(h.date) >= startOfWeek) count++;
+      });
+
+      $("weekCount").textContent = count;
+    }
+
+    function clearHistory() {
+      if (!confirm("Voulez-vous vraiment vider l'historique ?")) return;
+      localStorage.removeItem(HISTORY_KEY);
+      renderHistory();
+    }
+
+    // --- SETUP ACCORDIONS ---
+    function setupAccordion(headerId, contentId) {
+      const header = $(headerId);
+      const content = $(contentId);
+      header.addEventListener("click", () => {
+        header.classList.toggle("collapsed");
+        content.classList.toggle("collapsed");
+      });
+    }
+
+    // --- INIT PROGRAM ---
+    function init() {
+      // Load JSON data
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        try {
+          const obj = JSON.parse(raw);
+          // Basic structure check
+          if (obj.angle1 && obj.angle2 && obj.angle3 && obj.angle4) {
+            DATA = obj;
+          }
+        } catch { }
+      }
+
       setupAccordion("accordionJsonHeader", "accordionJsonContent");
       setupAccordion("accordionGenHeader", "accordionGenContent");
+      setupAccordion("accordionHistoryHeader", "accordionHistoryContent");
 
-      // Init
-      const loaded = load();
-      fillTextareasFromData(loaded ? DATA : DEFAULTS);
-      loadLocks();
-      showStatus(loaded ? "Listes chargées depuis ton navigateur (localStorage)." : "Exemple chargé. Colle tes JSON puis clique \"Appliquer les JSON\".", true);
-      generate({ force:true });
-    </script>
-  </body>
+      initJsonConfig();
+      initGen();
+
+      $("btnApply").addEventListener("click", applyFromTextareas);
+      $("btnExport").addEventListener("click", exportJson);
+      $("btnReset").addEventListener("click", resetData);
+
+      $("btnGenerate").addEventListener("click", () => generate({ force: true, skipAngleChange: true }));
+      $("btnReroll").addEventListener("click", () => generate({ force: false, skipAngleChange: true }));
+      $("btnCopy").addEventListener("click", copyBrief);
+
+      $("btnClearHistory").addEventListener("click", clearHistory);
+
+      // Init renders
+      renderHistory();
+      generate({ force: true });
+    }
+
+    document.addEventListener("DOMContentLoaded", init);
+  </script>
+</body>
+
 </html>

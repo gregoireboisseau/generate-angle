@@ -1,0 +1,324 @@
+{
+    "angle1": {
+        "nom": "Peur/Blocage",
+        "acteurs": [
+            "Les petits restaurants",
+            "Les artisans",
+            "Les gîtes ruraux",
+            "Les petits hôtels",
+            "Les commerçants locaux",
+            "Les entrepreneurs solo",
+            "Les petites structures",
+            "Les services locaux",
+            "Les créateurs/artisans",
+            "Les prestataires indépendants",
+            "Les petits commerces",
+            "Les gérants de chambres d'hôtes",
+            "Les professionnels du tourisme",
+            "Les petites PME"
+        ],
+        "peurs": [
+            "qu'un site internet c'est trop compliqué",
+            "qu'un bon site coûte 5000€ minimum",
+            "que ça prend 6 mois pour avoir un site",
+            "qu'ils ont besoin d'une agence parisienne",
+            "que c'est trop technique",
+            "qu'ils vont devoir faire ça tous seuls",
+            "qu'Internet ça ne marche que pour les grandes entreprises",
+            "que personne ne les trouvera de toute façon",
+            "que c'est juste une mode et que ça ne change rien",
+            "qu'un site c'est un truc qu'il faut maintenir tout le temps",
+            "que personne de leur clientèle n'est sur Internet",
+            "qu'ils n'ont pas assez de budget pour faire ça bien",
+            "qu'un site c'est réservé aux gens qui savent coder",
+            "que ça va leur demander trop de temps à gérer"
+        ],
+        "explications": [
+            "Un site peut être simple, efficace, et pas cher. C'est juste une question de stratégie, pas de budget.",
+            "La plupart des sites sont lents parce qu'ils sont mal faits, pas parce qu'il faut un budget énorme.",
+            "Un bon site local, c'est 2-3 semaines. Pas 6 mois.",
+            "Les agences parisiennes ne comprennent pas ton métier. Un local, oui.",
+            "La technologie, c'est juste un outil. Ce qui compte, c'est le résultat pour ton activité.",
+            "Tu n'as pas besoin de tout faire toi-même. C'est pour ça qu'il y a des consultants.",
+            "Les petites structures locales vendent PLUS en ligne. Elles ont juste pas commencé.",
+            "Si tu expliques clairement ce que tu fais, les gens te trouvent. Et ils achètent.",
+            "Un site n'est pas une mode. C'est devenu un standard. Pas avoir de site, c'est perdre de l'argent.",
+            "Un site bien pensé, c'est autonome. Une fois fait, ça tourne. Tu peux le mettre à jour toi-même en 5 min.",
+            "Tes clients sont DÉJÀ sur Internet. Même les ruraux. Ils te cherchent juste pas sur Google.",
+            "Le budget n'est jamais le problème. C'est toujours une question de priorité.",
+            "Tu n'as pas besoin de savoir coder. Tu as juste besoin de quelqu'un qui peut traduire ton métier en site.",
+            "Une fois le site lancé, c'est quelques minutes par mois. Pas des heures."
+        ],
+        "exemples": [
+            "J'ai fait 15+ petits restaurants avec des budgets modestes. Tous ont eu plus de réservations.",
+            "Un gîte rural sans site perd 30% de ses clients potentiels. C'est mesurable.",
+            "Les artisans qui ont un site génèrent 2x plus de demandes que ceux qui n'en ont pas.",
+            "Tes clients te cherchent déjà en ligne. Ils trouvent juste pas ton site (ou ton concurrent).",
+            "Un site bien pensé, c'est pas du luxe. C'est un outil de vente comme ta vitrine physique.",
+            "J'ai accompagné des petits hôtels qui pensaient que c'était trop cher. Ils ont découvert que le vrai coût c'était de rien faire.",
+            "Les commerçants qui se disaient 'Mon client n'est pas sur Internet' ont changé d'avis quand ils ont vu les résultats.",
+            "Un site peut être lancé en 2 semaines si on sait ce qu'on fait. La question c'est : pourquoi tu attends encore ?",
+            "Même en zone rurale, les gens tapent sur Google avant d'appeler. Si tu y es pas, ton concurrent l'est.",
+            "Un artisan m'a dit 'Je fais du beau travail, je n'ai pas besoin de marketing'. 6 mois plus tard, son client avait fermé. Internet c'est pas optionnel.",
+            "Les petites structures qui ont un site se demandent pourquoi elles y ont pas pensé plus tôt. Les autres se demandent pourquoi ça change rien.",
+            "Ceux qui pensent 'mon site sera trop complexe' sont souvent surpis : ce qu'il y a de plus puissant c'est la simplicité."
+        ]
+    },
+    "angle2": {
+        "nom": "Cas client",
+        "clients": [
+            "Un gîte en Yonne",
+            "Un restaurant local",
+            "Un artisan réparateur",
+            "Un petit hôtel rural",
+            "Un salon de coiffure",
+            "Un commerce artisanal",
+            "Une petite structure locale",
+            "Un prestataire de services",
+            "Un chambres d'hôtes",
+            "Un petit bar/café",
+            "Un artisan créateur",
+            "Un service touristique",
+            "Un commerçant indépendant",
+            "Une petite épicerie fine"
+        ],
+        "problemes": [
+            "Site ancien, lent, personne ne réservait dessus",
+            "Pas de site du tout, perdait 30% de clients",
+            "Site créé par un ami, non optimisé, invisible",
+            "Site beau mais personne ne savait comment commander",
+            "Dépendait d'une plateforme tiers, avait pas le contrôle",
+            "Site complexe, impossible à mettre à jour",
+            "Bonne présence sur les réseaux, mais zéro conversions",
+            "Site qui chargeait en 8 secondes, les clients partaient",
+            "Site sur mobile était un cauchemar",
+            "Pas de visibilité locale sur Google",
+            "Téléphone qui sonnait pas assez",
+            "Pas d'agenda de réservation en ligne",
+            "Clients qui partaient avant de remplir le formulaire",
+            "Pas moyen de montrer la qualité du travail"
+        ],
+        "solutions": [
+            "Refonte complète : site rapide, belles photos, réservation en 3 clics",
+            "Création d'un site simple, optimisé SEO local, visible sur Google",
+            "Passage à une solution moderne, rapide, maintenable par le client",
+            "Restructuration UX : parcours client simplifié",
+            "Création d'une présence web indépendante, avec outils propres",
+            "Nouvelle architecture, facile à mettre à jour",
+            "Site à l'image de la marque + intégration réseaux + SEO",
+            "Optimisation radicale : -6 secondes de temps de chargement",
+            "Design responsive impeccable, testé sur tous les appareils",
+            "Optimisation SEO locale avec Google My Business intégré",
+            "Ajout de CTA clairs et boutons d'appel en évidence",
+            "Intégration d'un système de réservation automatisé",
+            "Landing page convaincante avec social proof et témoignages",
+            "Portfolio ou galerie mettant en avant les réalisations"
+        ],
+        "resultats": [
+            "+40% de réservations via le site en 1 mois",
+            "+25% de demandes de devis après 3 mois",
+            "Première page Google pour le secteur local",
+            "+50% de clics depuis les résultats de recherche",
+            "Site autonome, client peut mettre à jour lui-même",
+            "Temps de chargement divisé par 2",
+            "Conversions x3 : plus de clics = plus d'appels",
+            "Le propriétaire a dû embaucher pour gérer la charge",
+            "Mobile conversions en hausse de 60%",
+            "Appels de réservation doublés en 3 mois",
+            "+35% de trafic organique en 2 mois",
+            "Réservations automatisées = moins de travail administratif",
+            "Taux de rebond divisé par 3",
+            "Client fidélisé sur 4 ans et continue de nous confier ses projets"
+        ],
+        "declics": [
+            "Ça m'a rappelé que j'aide des gens, pas juste des sites.",
+            "Le vrai coût ? Ne rien faire et perdre des clients.",
+            "C'est pas du luxe, c'est un outil de travail.",
+            "Quand tu fixes le problème, tout change rapidement.",
+            "L'impact est visible en quelques semaines, pas mois.",
+            "Un site mal fichu coûte plus cher qu'un site bien fait.",
+            "Le local a un avantage : les gens cherchent à proximité.",
+            "Ce n'est jamais le budget qui bloque. C'est la priorité.",
+            "Un site n'est pas un luxe ou un hobby. C'est un outil de vente.",
+            "Les petites structures locales ont un atout : la confiance. Faut juste la montrer en ligne.",
+            "Quand tu comprends le métier avant de coder, tout est plus facile.",
+            "J'ai réalisé que les vrais clients ne se soucient pas de la tech. Ils se soucient des résultats."
+        ]
+    },
+    "angle3": {
+        "nom": "Conseil pratique",
+        "acteurs": [
+            "Si tu es artisan/commerçant",
+            "Si tu es restaurateur",
+            "Si tu es gérant de gîte",
+            "Si tu es entrepreneur solo",
+            "Si tu es indépendant",
+            "Si tu tiens un petit hôtel",
+            "Si tu offres un service local",
+            "Si tu crées en ligne",
+            "Si tu es prestataire de services",
+            "Si tu diriges une petite PME",
+            "Si tu es créateur/artisan",
+            "Si tu as une petite structure locale",
+            "Si tu es nouveau dans le digital",
+            "Si tu veux augmenter tes revenus"
+        ],
+        "situations": [
+            "et t'as pas encore de site internet",
+            "et tu penses que ça coûte trop cher",
+            "et t'as pas le temps de t'occuper d'un site",
+            "et ton site n'apporte aucun client",
+            "et tu dépends 100% des réseaux sociaux",
+            "et tu viens de commencer ton activité",
+            "et tu veux être trouvable en ligne",
+            "et tu veux une présence digitale maîtrisée",
+            "et tu ne sais pas par où commencer",
+            "et tu as un site mais tu le négliges",
+            "et tu te demandes si ça en vaut vraiment la peine",
+            "et tes clients potentiels ne te trouvent pas",
+            "et tu veux une solution simple sans prise de tête",
+            "et tu cherches une vraie différenciation"
+        ],
+        "astuces": [
+            [
+                "Crée une page Google My Business (gratuit, 15 min. Les gens te trouvent quand ils te cherchent)",
+                "Récupère les avis clients (sur Google, sur ta page. Ça prouve que tu existes et tu es bon)",
+                "Pense à ton site comme un outil de vente, pas une vitrine (les gens doivent savoir ce que tu fais, pourquoi tu es mieux, comment te contacter)"
+            ],
+            [
+                "Commençe simple : une page, ta photo, ce que tu fais, comment commander",
+                "Mets à jour ton site aussi souvent que tu mets à jour tes réseaux",
+                "Un site lent coûte plus cher qu'un site bien fait"
+            ],
+            [
+                "Inverse le problème : tu n'as pas assez de clients ? C'est peut-être que personne ne te trouve",
+                "Google le sait si tu existes, mais pas les gens. Dis-le.",
+                "Un site, c'est pas optionnel. C'est un outil comme ta vitrine physique"
+            ],
+            [
+                "Fais un test : ajoute un bouton 'Réserver' ou 'Commander' et regarde ce qui se passe",
+                "Trop de sites beaux mais zéro conversion. Tu veux vendre, pas impressionner.",
+                "Tes clients idéaux te cherchent déjà. Ils trouvent juste ton concurrent."
+            ],
+            [
+                "Identifie ton vrai problème : absence de site ? Site lent ? Site invisible ? Pas de call-to-action ?",
+                "Le problème n'est presque jamais 'Je dois faire un site plus beau'",
+                "C'est presque toujours : 'Personne ne me trouve' ou 'Personne ne sait quoi faire une fois sur le site'"
+            ],
+            [
+                "Tes réseaux c'est cool, mais tu ne les contrôles pas. Un site, c'est TON espace.",
+                "Réseaux + site = puissance. Réseaux seuls = risqué.",
+                "Mets du trafic depuis tes réseaux vers ton site, pas l'inverse"
+            ],
+            [
+                "Demande à 5 clients pourquoi ils t'ont choisi. Écris leur réponse sur ton site.",
+                "Les témoignages ça vend plus que n'importe quelle belle photo",
+                "La confiance > l'esthétique. Toujours."
+            ],
+            [
+                "Regarde ce que font tes 3 meilleurs concurrents en ligne",
+                "Note ce qui les rend trouvables et ce qui les rend cliquables",
+                "Fais mieux, mais reste toi-même"
+            ],
+            [
+                "Teste un appel à l'action clair : 'Réserver' ou 'Appeler' ou 'Envoyer un message'",
+                "Pas de bouton = pas de vente. Les gens ne savent pas quoi faire.",
+                "Rends l'action facile et évidente"
+            ],
+            [
+                "Parle de ce que tu fais en termes de résultat client, pas de features",
+                "Pas 'Je crée des sites'. Mais 'Je vous aide à attirer plus de clients'",
+                "Les gens achètent un résultat, pas une technologie"
+            ],
+            [
+                "Mesure : combien de personnes visitent ? D'où viennent-elles ? Qu'est-ce qu'elles font ?",
+                "Si tu n'as pas de chiffres, tu décides à l'aveugle",
+                "Même un petit site peut avoir des statistiques simples"
+            ],
+            [
+                "Lance avec 80% de ce que tu veux faire. Améliore après, quand tu as du feedback réel",
+                "La perfection c'est l'ennemi du démarrage",
+                "Un site pas parfait qui attire clients = mieux qu'un site parfait qui repousse"
+            ]
+        ],
+        "cta": [
+            "Besoin d'en discuter ? On peut en parler en 20 min.",
+            "C'est peut-être le moment de te poser la bonne question.",
+            "Intéressé ? Je peux t'aider à identifier ton vrai blocage.",
+            "On peut en parler. Pas de bullshit, juste du concret.",
+            "Envie d'explorer ? Je suis dispo pour discuter.",
+            "Si tu veux clarifier, on peut prendre 30 min pour débriefer.",
+            "Pas sûr par où commencer ? Parlons-en.",
+            "Tu penses que c'est pas pour toi ? C'est peut-être que tu l'as pas vu sous le bon angle.",
+            "Curieux ? Mon agenda est dispo pour une discussion rapide.",
+            "Vous en doutiez ? J'ai 50+ cas qui prouvent que c'est possible pour vous aussi."
+        ]
+    },
+    "angle4": {
+        "nom": "Erreur courante",
+        "acteurs": [
+            "Les petits restaurants",
+            "Les artisans",
+            "Les petites structures",
+            "Les commerçants locaux",
+            "Les gérants de gîtes",
+            "Les indépendants",
+            "Les petits entrepreneurs",
+            "Les prestataires de services",
+            "Les petits hôtels",
+            "Les créateurs en ligne",
+            "Les petites PME",
+            "Les services touristiques",
+            "Les commerces artisanaux",
+            "Les professionnels du service"
+        ],
+        "erreurs": [
+            "un menu Instagram à jour mais un site qu'ils mettent jamais à jour",
+            "un site 'beau' mais où personne ne sait comment réserver/commander",
+            "un site sur une plateforme gratuite qu'ils ne contrôlent pas",
+            "un site qu'ils ont fait eux-mêmes et qui charge en 8 secondes",
+            "un site optimisé pour la beauté, pas pour les résultats",
+            "zéro présence en ligne et ils se demandent pourquoi personne n'achète",
+            "un site avec 100 informations quand 3 suffiraient",
+            "mettre en ligne un site et ne jamais le regarder après",
+            "faire des photos pourries quand des bonnes photos = plus de ventes",
+            "avoir un super site mais aucun moyen de montrer le résultat de son travail",
+            "un site 'fait par un développeur' que tu ne peux pas mettre à jour",
+            "inviter les gens sur ton site mais oublier le bouton 'appeler' ou 'réserver'",
+            "ignorer le mobile alors que 80% des visiteurs viennent de téléphone",
+            "croire que les réseaux sociaux suffisent et négliger le site"
+        ],
+        "consequences": [
+            "Les clients voient tes beaux plats sur Insta, cliquent sur ton site, voient une photo de 2019, et partent chez le concurrent.",
+            "Beaucoup de visites mais zéro conversions. C'est pas qu'on s'en fout, c'est que tu leur donnes pas envie.",
+            "Tu dépends 100% d'une plateforme. Elle change les règles ? Tu es coincé.",
+            "Personne ne reste sur le site. Trop lent = perte immédiate de clients.",
+            "Un site beau c'est cool, mais si personne ne le trouve, à quoi ça sert ?",
+            "Les gens te trouvent pas en ligne donc ils achètent ailleurs. C'est mesurable.",
+            "Les visiteurs se perdent. Trop d'info = paralysie et abandon du site.",
+            "Un site c'est pas un 'set and forget'. Faut l'entretenir comme ton resto : régulièrement.",
+            "Les mauvaises photos = clients qui pensent que ton service est mauvais. Même si c'est faux.",
+            "Ton travail parle pour lui-même en vrai, mais online tu dois le montrer. Sinon personne ne le croit.",
+            "Tu es dépendant d'une personne qui s'en fout de ton business. C'est dangereux.",
+            "Des visiteurs arrivent, ont envie d'acheter, mais ne trouvent pas où/comment. Ils partent.",
+            "Tu perds 80% de tes clients potentiels car le site est imbitable sur téléphone.",
+            "Un jour la plateforme change d'algo, tes réseaux cessent de tourner, et tu n'as plus rien."
+        ],
+        "insights": [
+            "Un site, c'est un outil. Il faut l'entretenir comme ton resto : régulièrement.",
+            "La beauté sans résultats = du luxe. Les résultats sans beauté = du business.",
+            "Les gens ne sont pas sur ton site pour admirer. Ils sont là pour savoir si tu peux les aider.",
+            "Si tes réseaux sont bons mais ton site ne convertit pas, le problème c'est pas les réseaux.",
+            "Un site local n'a pas besoin d'être parfait. Il a juste besoin de marcher.",
+            "Ton vrai concurrent n'est pas le mec en face. C'est celui qu'on trouve en ligne et qui convertit.",
+            "Optimiser un site lent coûte moins cher que de perdre des clients à cause de la vitesse.",
+            "Un site qu'on met à jour tous les 6 mois c'est un site mort pour Google et pour tes clients.",
+            "Montrer ton travail c'est pas du narcissisme. C'est du business. Fais-le.",
+            "Les meilleures photos = les meilleures ventes. C'est aussi simple que ça.",
+            "Un site que tu possèdes vraiment = tranquillité d'esprit et indépendance financière.",
+            "Pas de bouton 'appeler' = tu rejettes activement tes clients potentiels.",
+            "Mobile first ou mobile failure. Il n'y a pas de milieu.",
+            "Les réseaux sont importants. Mais un site c'est ton assurance-vie digitale."
+        ]
+    }
+}
